@@ -14,7 +14,7 @@ import numpy as np
 
 tf.__version__
 
-checkpoint_path = "cp.ckpt"
+checkpoint_path = "training_1/cp.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
 
 # Import the class names to translate the model output from an index to a meaninful class name
