@@ -1,12 +1,6 @@
 from tkinter import *
 import random
-#from Pillow import Image
-#from Pillow import Image
-
-def get_prediction():
-    item_list = ['drums', 'sun', 'laptop', 'book', 'traffic_light', 'wristwatch', 'wheel', 'shovel', 'cake', 'clock', 'broom', 'crown', 'cactus', 'car', 'bicycle', 'donut']
-    string_item = random.choice(item_list)
-    return string_item
+#from convert import Functions as fun
 
 class MainWindow:
     def close_all(self):
@@ -56,15 +50,17 @@ class MainWindow:
         self.saving = False
         #img = Image.open("image.ps")
         #img.save("image.png", "png")
+        fun.convert()
 
-        string_item = get_prediction()
+        string_item = fun.get_prediction()
         self.guess_label.config(text = "Is it a "+string_item+"?")
 
     def new_chosen(self, event):
         self.canvas.delete(ALL)
         item_list = ['drums', 'sun', 'laptop', 'book', 'traffic_light', 'wristwatch', 'wheel', 'shovel', 'cake', 'clock', 'broom', 'crown', 'cactus', 'car', 'bicycle', 'donut']
         string_item = random.choice(item_list)
-        self.prompt_label.config(text = "Draw a "+string_item)        
+        self.prompt_label.config(text = "Draw a "+string_item)
+        self.guess_label.config(text = " ")
            
     def __init__(self):
         #   Sets up the window
@@ -111,5 +107,6 @@ class MainWindow:
         self.no_button.bind('<Button-1>', self.new_chosen)
 
         self.root.protocol("WM_DELETE_WINDOW", self.close_all)
+        self.root.mainloop()
 
 app = MainWindow()
