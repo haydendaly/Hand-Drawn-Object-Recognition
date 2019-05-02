@@ -1,6 +1,5 @@
 from tkinter import *
 import random
-# from Pillow import Image
 import skimage.io as ski_io
 import tensorflow as tf
 from tensorflow import keras
