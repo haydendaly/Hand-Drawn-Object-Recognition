@@ -11,6 +11,11 @@ import tensorflow as tf
 from tensorflow import keras
 import os
 import numpy as np
+import imageio
+
+from skimage.transform import resize
+
+
 
 tf.__version__
 
@@ -40,11 +45,20 @@ res_model = create_model()
 res_model.load_weights(checkpoint_path) #load weights from folder
 
 # replace this sample with actual array of size (1,784)
-sample = np.array(np.random.randint(255, size=784)) / 255 
-sample = sample.reshape(1, 784)
+# sample = np.array(np.random.randint(255, size=784)) / 255
+im = imageio.imread('canvas_image.png')
+arr = np.array(im) # cast into a numpy array
+b, g, r    = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2] # For RGB image
+
+image_array = b #they are all equal, so select any
+
+image_resized = resize(image_array, (28, 28), anti_aliasing=True) #resize
+
+image_vector = image_resized.flatten().reshape(1,784)
+
 
 # Run the restored model on the sample image, output an index
-Y_idx = int(np.argmax(res_model.predict(sample)))
+Y_idx = int(np.argmax(res_model.predict(image_vector)))
 # translate the index to a class name
 predicted_class = class_names[Y_idx]
 print(predicted_class)

@@ -1,12 +1,70 @@
 from tkinter import *
 import random
-#from Pillow import Image
-#from Pillow import Image
+# from Pillow import Image
+import skimage.io as ski_io
+import tensorflow as tf
+from tensorflow import keras
+import os
+import numpy as np
+import imageio
+from PIL import Image
+
+from skimage.transform import resize
+
+# This function has the information necessary to create a model with the appropriate dimensions
+def create_model():
+    model = tf.keras.models.Sequential([
+        keras.layers.Dense(512, activation=tf.keras.activations.relu, input_shape=(784,)),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(16, activation=tf.keras.activations.softmax)
+    ])
+
+    model.compile(optimizer=tf.keras.optimizers.Adam(),
+                loss=tf.keras.losses.sparse_categorical_crossentropy,
+                metrics=['accuracy'])
+
+    return model
 
 def get_prediction():
-    item_list = ['drums', 'sun', 'laptop', 'book', 'traffic_light', 'wristwatch', 'wheel', 'shovel', 'cake', 'clock', 'broom', 'crown', 'cactus', 'car', 'bicycle', 'donut']
-    string_item = random.choice(item_list)
-    return string_item
+    # item_list = ['drums', 'sun', 'laptop', 'book', 'traffic_light', 'wristwatch', 'wheel', 'shovel', 'cake', 'clock', 'broom', 'crown', 'cactus', 'car', 'bicycle', 'donut']
+    # string_item = random.choice(item_list)
+    # return string_item
+
+    tf.__version__
+
+    checkpoint_path = "training_1/cp.ckpt"
+    checkpoint_dir = os.path.dirname(checkpoint_path)
+
+    # Import the class names to translate the model output from an index to a meaninful class name
+    class_names = ['cake', 'traffic_light', 'donut', 'book', 'wheel', 'wristwatch', 'laptop', 'sun', 'shovel', 'drums', 'bicycle', 'cactus', 'broom', 'crown', 'car', 'clock']
+
+    # To run the model we already trained, we must create a new model with the same parameters and load the trained weights
+    res_model = create_model()
+    res_model.load_weights(checkpoint_path) #load weights from folder
+
+    img = Image.open('canvas_image.png')
+
+        
+    img = img.resize((112, 112), Image.ANTIALIAS)
+    img = img.resize((28,28))
+    img.save("image.png")
+
+    img = Image.open("image.png")
+    np_img = np.array(img)
+    np_img = np_img[:,:,0]
+    np_img = abs(np_img-255)/255
+
+    image_vector = np_img.flatten()
+    image_vector = image_vector.reshape(1,784)
+
+    Y_idx = int(np.argmax(res_model.predict(image_vector)))
+    # translate the index to a class name
+    predicted_class = class_names[Y_idx]
+    print(predicted_class)
+
+
+    return predicted_class
+
 
 class MainWindow:
     def close_all(self):
@@ -52,8 +110,15 @@ class MainWindow:
 
     def test_canvas(self, event):
         #   Saves to postscript file
-        save_file = self.canvas.postscript(file = "image.ps")
-        self.saving = False
+        save_file = self.canvas.postscript(file = "image1.eps")
+        # read the postscript data
+        data = ski_io.imread("image1.eps")
+
+        # write a rasterized png file
+        ski_io.imsave("canvas_image.png", data)
+        
+        # self.saving = False
+
         #img = Image.open("image.ps")
         #img.save("image.png", "png")
 
@@ -111,5 +176,6 @@ class MainWindow:
         self.no_button.bind('<Button-1>', self.new_chosen)
 
         self.root.protocol("WM_DELETE_WINDOW", self.close_all)
+        self.root.mainloop()
 
 app = MainWindow()
