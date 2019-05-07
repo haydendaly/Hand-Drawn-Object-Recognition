@@ -35,8 +35,7 @@ def get_prediction():
     checkpoint_dir = os.path.dirname(checkpoint_path)
 
     # Import the class names to translate the model output from an index to a meaninful class name
-    class_names = ['cake', 'traffic_light', 'donut', 'book', 'wheel', 'wristwatch', 'laptop', 'sun', 'shovel', 'drums', 'bicycle', 'cactus', 'broom', 'crown', 'car', 'clock']
-
+    class_names = ['pants', 'cloud', 'shovel', 'eyeglasses', 'drums', 'book', 'cactus', 'cake', 'donut', 'traffic_light', 'crown', 'sun', 't-shirt', 'broom', 'wristwatch', 'wheel']
     # To run the model we already trained, we must create a new model with the same parameters and load the trained weights
     res_model = create_model()
     res_model.load_weights(checkpoint_path) #load weights from folder
@@ -126,7 +125,7 @@ class MainWindow:
 
     def new_chosen(self, event):
         self.canvas.delete(ALL)
-        item_list = ['drums', 'sun', 'laptop', 'book', 'traffic_light', 'wristwatch', 'wheel', 'shovel', 'cake', 'clock', 'broom', 'crown', 'cactus', 'car', 'bicycle', 'donut']
+        item_list = ['pair of pants', 'cloud', 'shovel', 'eyeglasses', 'drum', 'book', 'cactus', 'cake', 'donut', 'traffic_light', 'crown', 'sun', 't-shirt', 'broom', 'wristwatch', 'wheel']
         string_item = random.choice(item_list)
         self.prompt_label.config(text = "Draw a "+string_item)        
            
